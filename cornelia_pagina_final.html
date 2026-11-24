@@ -1,0 +1,2155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CORNELIA Nail Studio — Portal & Administración POS</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --rosa: #ff2b91;
+            --rosaOscuro: #d81b75;
+            --rosaClaro: #fff0f6;
+            --blanco: #ffffff;
+            --texto: #2b2b2b;
+            --grisSuave: #f9f9f9;
+            --dorado: #d4af37;
+            --navy: #1e293b;
+            --slate: #475569;
+            --borde: #e2e8f0;
+            --verde: #0f766e;
+            --verdeClaro: #f0fdfa;
+            --ambar: #b45309;
+            --ambarClaro: #fffbeb;
+            --rojo: #be123c;
+            --rojoClaro: #fff1f2;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: #fafafa;
+            color: var(--texto);
+            padding-bottom: 100px;
+        }
+
+        /* Barra Superior de Navegación Dual (Clienta / Administración) */
+        .top-mode-bar {
+            position: sticky;
+            top: 0;
+            z-index: 1100;
+            background: rgba(30, 41, 59, 0.97);
+            backdrop-filter: blur(8px);
+            color: white;
+            padding: 10px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        .brand-mini {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            font-size: 0.95rem;
+        }
+
+        .brand-mini span.dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--rosa);
+            display: inline-block;
+        }
+
+        .mode-switch-group {
+            display: flex;
+            gap: 8px;
+            background: rgba(255,255,255,0.08);
+            padding: 4px;
+            border-radius: 30px;
+        }
+
+        .mode-btn {
+            border: none;
+            background: transparent;
+            color: #cbd5e1;
+            padding: 7px 16px;
+            border-radius: 25px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .mode-btn.active {
+            background: var(--rosa);
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 3px 10px rgba(255, 43, 145, 0.4);
+        }
+
+        .badge-count {
+            background: white;
+            color: var(--rosaOscuro);
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 1px 7px;
+            border-radius: 12px;
+        }
+
+        /* Hero / Pantalla de Bienvenida */
+        .hero {
+            background: linear-gradient(135deg, rgba(255, 240, 246, 0.95), rgba(255, 226, 241, 0.95)), 
+                        url('https://images.unsplash.com/photo-1604654894610-df63bc536371?q=80&w=1200&auto=format&fit=crop') center/cover;
+            padding: 75px 20px 65px 20px;
+            text-align: center;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+            box-shadow: 0 10px 30px rgba(255, 43, 145, 0.1);
+            position: relative;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.85);
+            border: 1px solid var(--rosa);
+            color: var(--rosa);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.6rem;
+            color: var(--rosa);
+            letter-spacing: 3px;
+            line-height: 1.1;
+        }
+
+        .hero p {
+            margin: 15px auto 25px auto;
+            font-size: 1.1rem;
+            color: #555;
+            max-width: 560px;
+            font-weight: 300;
+        }
+
+        .btn-hero {
+            display: inline-block;
+            background: var(--rosa);
+            color: white;
+            padding: 14px 32px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 8px 20px rgba(255, 43, 145, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .btn-hero:hover {
+            background: var(--rosaOscuro);
+            transform: translateY(-2px);
+        }
+
+        .container {
+            width: 92%;
+            max-width: 940px;
+            margin: 35px auto 0 auto;
+        }
+
+        .admin-container {
+            width: 94%;
+            max-width: 1240px;
+            margin: 28px auto 0 auto;
+        }
+
+        /* Tarjetas de Sección */
+        .card-section {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.04);
+            margin-bottom: 24px;
+        }
+
+        .card-section h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--rosa);
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        /* Selector de Especialista */
+        .radio-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .radio-btn {
+            flex: 1;
+            min-width: 110px;
+            text-align: center;
+            padding: 12px;
+            border: 2px solid var(--rosaClaro);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-weight: 500;
+            background: white;
+        }
+
+        .radio-btn.active {
+            border-color: var(--rosa);
+            background: var(--rosaClaro);
+            color: var(--rosa);
+            font-weight: 600;
+        }
+
+        /* Botones de Horarios */
+        .horarios-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(115px, 1fr));
+            gap: 10px;
+        }
+
+        .horario-btn {
+            padding: 12px 10px;
+            border: 2px solid var(--rosaClaro);
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: 0.3s;
+        }
+
+        .horario-btn:hover:not(.ocupado) {
+            border-color: var(--rosa);
+        }
+
+        .horario-btn.active {
+            border-color: var(--rosa);
+            background: var(--rosa);
+            color: white;
+        }
+
+        .horario-btn.ocupado {
+            background: #f4f4f4;
+            border-color: #e5e5e5;
+            color: #bbbbbb;
+            cursor: not-allowed;
+            text-decoration: line-through;
+        }
+
+        /* Acordeón */
+        .acordeon-item {
+            background: white;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.04);
+            overflow: hidden;
+        }
+
+        .acordeon-header {
+            background: white;
+            padding: 20px 25px;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.35rem;
+            color: var(--rosa);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #f9f9f9;
+        }
+
+        .acordeon-header::after {
+            content: '▼';
+            font-size: 0.85rem;
+            transition: 0.3s;
+        }
+
+        .acordeon-item.active .acordeon-header::after {
+            transform: rotate(180deg);
+        }
+
+        .acordeon-content {
+            display: none;
+            padding: 20px;
+        }
+
+        .acordeon-item.active .acordeon-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 12px;
+        }
+
+        .item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background: var(--rosaClaro);
+            border-radius: 10px;
+            gap: 8px;
+        }
+
+        .item span {
+            font-size: 0.88rem;
+            font-weight: 500;
+        }
+
+        .btn-elegir {
+            background: var(--rosa);
+            color: white;
+            border: none;
+            padding: 7px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.83rem;
+            font-weight: 500;
+            transition: 0.3s;
+            white-space: nowrap;
+        }
+
+        .btn-elegir:hover { background: var(--rosaOscuro); }
+
+        /* Ubicación */
+        .ubicacion-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--rosaClaro);
+            padding: 18px;
+            border-radius: 12px;
+            gap: 15px;
+        }
+
+        .btn-mapa {
+            background: var(--rosa);
+            color: white;
+            padding: 10px 18px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        /* Resumen */
+        .resumen {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.04);
+            margin-top: 24px;
+        }
+
+        .client-inputs-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1.5px solid var(--borde);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s;
+            background: white;
+        }
+
+        .form-control:focus {
+            border-color: var(--rosa);
+        }
+
+        .lista-resumen {
+            list-style: none;
+            margin-bottom: 15px;
+        }
+
+        .lista-resumen li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px dashed #eee;
+            font-size: 0.95rem;
+        }
+
+        .total-box {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .btn-confirmar {
+            width: 100%;
+            background: var(--rosa);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.3s;
+        }
+
+        .btn-confirmar:hover { background: var(--rosaOscuro); }
+
+        /* Modal Elegante */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.55);
+            backdrop-filter: blur(4px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1200;
+            padding: 16px;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 28px;
+            border-radius: 20px;
+            max-width: 480px;
+            width: 100%;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+        }
+
+        .modal-content h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--rosa);
+            margin-bottom: 10px;
+            text-align: center;
+            font-size: 1.45rem;
+        }
+
+        .btn-cerrar {
+            position: absolute;
+            top: 15px; right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.3rem;
+            cursor: pointer;
+            color: #888;
+        }
+
+        /* WhatsApp Flotante */
+        .btn-wa-flotante {
+            position: fixed;
+            bottom: 20px; right: 20px;
+            background: #25D366;
+            color: white;
+            padding: 14px 22px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            box-shadow: 0 6px 15px rgba(37, 211, 102, 0.3);
+            z-index: 999;
+        }
+
+        /* =========================================================
+           ESTILOS DE LA VISTA INTERNA DE ADMINISTRACIÓN (POS & ERP)
+           ========================================================= */
+        #vista-admin {
+            display: none;
+        }
+
+        .admin-header-banner {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            color: white;
+            padding: 28px 32px;
+            border-radius: 20px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.15);
+        }
+
+        .admin-header-banner h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.85rem;
+            color: #ffffff;
+            margin-bottom: 4px;
+        }
+
+        .admin-header-banner p {
+            font-size: 0.9rem;
+            color: #cbd5e1;
+        }
+
+        .admin-actions-top {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-secondary-admin {
+            background: rgba(255,255,255,0.12);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.22);
+            padding: 9px 16px;
+            border-radius: 10px;
+            font-size: 0.83rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-secondary-admin:hover {
+            background: rgba(255,255,255,0.22);
+        }
+
+        .btn-export-csv {
+            background: var(--verde);
+            color: white;
+            border: none;
+            padding: 9px 16px;
+            border-radius: 10px;
+            font-size: 0.83rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-export-csv:hover {
+            background: #0d9488;
+        }
+
+        /* Tarjetas KPI */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .kpi-card {
+            background: white;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+            border-top: 4px solid var(--rosa);
+        }
+
+        .kpi-card.teal { border-top-color: var(--verde); }
+        .kpi-card.navy { border-top-color: var(--navy); }
+        .kpi-card.amber { border-top-color: var(--ambar); }
+
+        .kpi-label {
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--slate);
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .kpi-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--navy);
+            line-height: 1.2;
+        }
+
+        .kpi-sub {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-top: 6px;
+        }
+
+        /* Sub-pestañas internas de Administración */
+        .admin-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .admin-tab-btn {
+            background: white;
+            border: 1.5px solid var(--borde);
+            color: var(--slate);
+            padding: 11px 20px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .admin-tab-btn.active {
+            background: var(--rosaOscuro);
+            border-color: var(--rosaOscuro);
+            color: white;
+            box-shadow: 0 4px 12px rgba(216, 27, 117, 0.25);
+        }
+
+        .admin-panel {
+            display: none;
+        }
+
+        .admin-panel.active {
+            display: block;
+        }
+
+        /* Layout POS 2 columnas */
+        .pos-layout {
+            display: grid;
+            grid-template-columns: 1fr 1.35fr;
+            gap: 22px;
+            align-items: start;
+        }
+
+        .panel-box {
+            background: white;
+            padding: 22px;
+            border-radius: 16px;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.04);
+        }
+
+        .panel-box h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--navy);
+            font-size: 1.25rem;
+            margin-bottom: 6px;
+        }
+
+        .panel-desc {
+            font-size: 0.84rem;
+            color: var(--slate);
+            margin-bottom: 16px;
+        }
+
+        /* Cola de Citas */
+        .cita-card {
+            border: 1.5px solid var(--borde);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 12px;
+            transition: 0.2s;
+            background: #ffffff;
+        }
+
+        .cita-card:hover {
+            border-color: var(--rosa);
+            background: var(--rosaClaro);
+        }
+
+        .cita-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .tag-esp {
+            background: var(--navy);
+            color: white;
+            font-size: 0.74rem;
+            font-weight: 600;
+            padding: 3px 9px;
+            border-radius: 8px;
+        }
+
+        .tag-hora {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--rosaOscuro);
+        }
+
+        .btn-cargar-cita {
+            margin-top: 10px;
+            width: 100%;
+            background: var(--rosa);
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.83rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-cargar-cita:hover {
+            background: var(--rosaOscuro);
+        }
+
+        /* Formulario POS */
+        .form-row-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--navy);
+            margin-bottom: 4px;
+        }
+
+        .pos-service-adder {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .pos-items-list {
+            list-style: none;
+            background: #f8fafc;
+            border: 1px solid var(--borde);
+            border-radius: 10px;
+            padding: 10px 14px;
+            margin-bottom: 14px;
+            max-height: 180px;
+            overflow-y: auto;
+        }
+
+        .pos-items-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+            border-bottom: 1px dashed #cbd5e1;
+            font-size: 0.86rem;
+        }
+
+        .pos-items-list li:last-child {
+            border-bottom: none;
+        }
+
+        .btn-del-mini {
+            background: none;
+            border: none;
+            color: var(--rojo);
+            font-weight: 700;
+            cursor: pointer;
+            margin-left: 8px;
+        }
+
+        /* Caja de Previsualización de Impacto Automático */
+        .impact-preview-box {
+            background: var(--rosaClaro);
+            border: 1.5px solid #f9a8d4;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 14px;
+        }
+
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .impact-metric {
+            background: white;
+            padding: 8px;
+            border-radius: 8px;
+        }
+
+        .impact-metric small {
+            display: block;
+            font-size: 0.72rem;
+            color: var(--slate);
+        }
+
+        .impact-metric strong {
+            font-size: 1.05rem;
+            color: var(--navy);
+        }
+
+        .impact-metric.pink strong { color: var(--rosaOscuro); }
+        .impact-metric.teal strong { color: var(--verde); }
+
+        .sku-preview-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 6px;
+        }
+
+        .sku-chip {
+            background: white;
+            border: 1px solid #cbd5e1;
+            font-size: 0.75rem;
+            padding: 3px 8px;
+            border-radius: 6px;
+            color: var(--navy);
+        }
+
+        /* Tablas de Inventario y Ventas */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table.admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.86rem;
+        }
+
+        table.admin-table th {
+            background: var(--navy);
+            color: white;
+            text-align: left;
+            padding: 11px 12px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        table.admin-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--borde);
+            vertical-align: middle;
+        }
+
+        table.admin-table tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .status-pill {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .status-ok { background: var(--verdeClaro); color: var(--verde); border: 1px solid #99f6e4; }
+        .status-low { background: var(--ambarClaro); color: var(--ambar); border: 1px solid #fde68a; }
+        .status-crit { background: var(--rojoClaro); color: var(--rojo); border: 1px solid #fecdd3; }
+
+        .btn-restock {
+            background: var(--navy);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 6px;
+            font-size: 0.76rem;
+            cursor: pointer;
+        }
+
+        .btn-restock:hover { background: var(--rosaOscuro); }
+
+        /* Tarjetas Comisiones Especialistas */
+        .comisiones-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 18px;
+            margin-bottom: 22px;
+        }
+
+        .esp-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+            border-left: 5px solid var(--rosa);
+        }
+
+        .esp-card.shantal { border-left-color: var(--verde); }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 10px;
+            background: #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--rosa);
+            transition: width 0.3s ease;
+        }
+
+        .esp-card.shantal .progress-bar-fill {
+            background: var(--verde);
+        }
+
+        @media (max-width: 860px) {
+            .pos-layout { grid-template-columns: 1fr; }
+            .client-inputs-grid, .form-row-2 { grid-template-columns: 1fr; }
+            .impact-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Barra Superior de Cambio de Vista (Portal Clienta vs Administración Interna) -->
+    <nav class="top-mode-bar">
+        <div class="brand-mini">
+            <span class="dot"></span>
+            <span>CORNELIA NAIL STUDIO</span>
+        </div>
+        <div class="mode-switch-group">
+            <button id="btn-mode-clienta" class="mode-btn active" onclick="cambiarModoVista('clienta')">
+                💅 Portal Clientas (Reservas)
+            </button>
+            <button id="btn-mode-admin" class="mode-btn" onclick="solicitarAccesoAdmin()">
+                🔐 Administración POS <span id="badge-citas-pendientes" class="badge-count">0</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- =====================================================================
+         VISTA 1: PORTAL DE CLIENTAS (CATÁLOGO Y RESERVAS EN TIEMPO REAL)
+         ===================================================================== -->
+    <div id="vista-clienta">
+        <!-- Pantalla de Bienvenida (Hero Section) -->
+        <header class="hero">
+            <span class="hero-badge">Estudio Profesional</span>
+            <h1>CORNELIA</h1>
+            <p>Nail Studio & Luxury Care. Diseños exclusivos y experiencia relajante para tus manos y pies.</p>
+            <a href="#agendar" class="btn-hero">Agendar Mi Cita ✨</a>
+        </header>
+
+        <div class="container" id="agendar">
+            
+            <!-- 1. Especialistas -->
+            <div class="card-section">
+                <h3>1. Selecciona a tu Especialista</h3>
+                <div class="radio-group">
+                    <div class="radio-btn active" onclick="cambiarEspecialista(this, 'EVA')">EVA</div>
+                    <div class="radio-btn" onclick="cambiarEspecialista(this, 'SHANTAL')">SHANTAL</div>
+                    <div class="radio-btn" onclick="cambiarEspecialista(this, 'ALEATORIO')">ALEATORIO</div>
+                </div>
+            </div>
+
+            <!-- 2. Horarios Dinámicos por Especialista -->
+            <div class="card-section">
+                <h3>2. Horarios Disponibles (<span id="nombre-especialista">EVA</span>)</h3>
+                <div id="grid-horarios" class="horarios-grid"></div>
+            </div>
+
+            <!-- 3. Acordeón Manos -->
+            <div class="acordeon-item active">
+                <div class="acordeon-header" onclick="toggleAcordeon(this)">
+                    3. Servicios de Manos
+                </div>
+                <div class="acordeon-content">
+                    <div class="item"><span>Manicure Ruso con esmalte - $280</span><button class="btn-elegir" onclick="agregar('Manicure Ruso con esmalte', 280)">Elegir</button></div>
+                    <div class="item"><span>Manicure Ruso con shellac - $350</span><button class="btn-elegir" onclick="agregar('Manicure Ruso con shellac liso', 350)">Elegir</button></div>
+                    <div class="item"><span>Manicure Spa con shellac - $400</span><button class="btn-elegir" onclick="agregar('Manicure Spa con shellac liso', 400)">Elegir</button></div>
+                    <div class="item"><span>Manicure Spa con esmalte - $340</span><button class="btn-elegir" onclick="agregar('Manicure Spa con esmalte', 340)">Elegir</button></div>
+                    <div class="item"><span>Rubber con color - $350</span><button class="btn-elegir" onclick="agregar('Rubber con color', 350)">Elegir</button></div>
+                    <div class="item"><span>Acrigel color liso - $400</span><button class="btn-elegir" onclick="agregar('Acrigel color liso', 400)">Elegir</button></div>
+                    <div class="item"><span>Uñas Acrílicas tip liso - $430</span><button class="btn-elegir" onclick="agregar('Uñas Acrílicas con tip liso', 430)">Elegir</button></div>
+                    <div class="item"><span>Uñas Esculturales (máx. #3) - $500</span><button class="btn-elegir" onclick="agregar('Uñas Esculturales', 500)">Elegir</button></div>
+                    <div class="item"><span>Baño de Acrílico - $350</span><button class="btn-elegir" onclick="agregar('Baño de Acrílico', 350)">Elegir</button></div>
+                    <div class="item"><span>Poligel alargamiento tip - $420</span><button class="btn-elegir" onclick="agregar('Poligel alargamiento en tip', 420)">Elegir</button></div>
+                    <div class="item"><span>Poligel escultural - $500</span><button class="btn-elegir" onclick="agregar('Poligel escultural', 500)">Elegir</button></div>
+                    <div class="item"><span>Poligel uña natural - $380</span><button class="btn-elegir" onclick="agregar('Poligel en uña natural', 380)">Elegir</button></div>
+                    <div class="item"><span>Press-On color liso - $460</span><button class="btn-elegir" onclick="agregar('Uñas Press-On color liso', 460)">Elegir</button></div>
+                    <div class="item"><span>Soft Gel color liso - $500</span><button class="btn-elegir" onclick="agregar('Uñas Soft Gel color liso', 500)">Elegir</button></div>
+                    <div class="item"><span>Esmalte Regular - $120</span><button class="btn-elegir" onclick="agregar('Esmalte Regular', 120)">Elegir</button></div>
+                    <div class="item"><span>Aplicación de Shellac - $180</span><button class="btn-elegir" onclick="agregar('Aplicación de Shellac', 180)">Elegir</button></div>
+                    <div class="item"><span>Base Calcio - $100</span><button class="btn-elegir" onclick="agregar('Base Calcio', 100)">Elegir</button></div>
+                </div>
+            </div>
+
+            <!-- 4. Acordeón Pies -->
+            <div class="acordeon-item">
+                <div class="acordeon-header" onclick="toggleAcordeon(this)">
+                    4. Servicios de Pies
+                </div>
+                <div class="acordeon-content">
+                    <div class="item"><span>Rubber con color - $360</span><button class="btn-elegir" onclick="agregar('Rubber con color (Pies)', 360)">Elegir</button></div>
+                    <div class="item"><span>Aplicación de shellac - $180</span><button class="btn-elegir" onclick="agregar('Aplicación de shellac (Pies)', 180)">Elegir</button></div>
+                    <div class="item"><span>Acripie por uña - $80</span><button class="btn-elegir" onclick="agregar('Acripie por uña', 80)">Elegir</button></div>
+                    <div class="item"><span>Acripie con shellac - $400</span><button class="btn-elegir" onclick="agregar('Acripie con shellac', 400)">Elegir</button></div>
+                    <div class="item"><span>Acripie sin shellac - $250</span><button class="btn-elegir" onclick="agregar('Acripie sin shellac', 250)">Elegir</button></div>
+                    <div class="item"><span>Base Calcio - $100</span><button class="btn-elegir" onclick="agregar('Base Calcio (Pies)', 100)">Elegir</button></div>
+                    <div class="item"><span>Pedicure Ruso con shellac - $400</span><button class="btn-elegir" onclick="agregar('Pedicure Ruso con shellac', 400)">Elegir</button></div>
+                    <div class="item"><span>Pedicure Ruso con esmalte - $360</span><button class="btn-elegir" onclick="agregar('Pedicure Ruso con esmalte', 360)">Elegir</button></div>
+                    <div class="item"><span>Pedicure Básico con shellac - $460</span><button class="btn-elegir" onclick="agregar('Pedicure Básico con shellac', 460)">Elegir</button></div>
+                    <div class="item"><span>Pedicure Básico con esmalte - $400</span><button class="btn-elegir" onclick="agregar('Pedicure Básico con esmalte', 400)">Elegir</button></div>
+                    <div class="item"><span>Pedicure Spa con shellac - $550</span><button class="btn-elegir" onclick="agregar('Pedicure Spa con shellac', 550)">Elegir</button></div>
+                    <div class="item"><span>Pedicure Spa con esmalte - $500</span><button class="btn-elegir" onclick="agregar('Pedicure Spa con esmalte', 500)">Elegir</button></div>
+                </div>
+            </div>
+
+            <!-- Ubicación -->
+            <div class="card-section">
+                <h3>📍 Nuestra Ubicación</h3>
+                <div class="ubicacion-box">
+                    <div>
+                        <strong>Cornelia Nail Studio</strong><br>
+                        <small style="color: #666;">Av. Principal #123, Colonia Centro, Guadalajara</small>
+                    </div>
+                    <a href="https://maps.google.com" target="_blank" class="btn-mapa">Ver en Maps</a>
+                </div>
+            </div>
+
+            <!-- Resumen -->
+            <div class="resumen">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                    <h3>Resumen de tu Cita</h3>
+                    <button onclick="limpiarTodo()" style="background:none; border:none; color:#888; cursor:pointer; font-size:0.85rem;">Limpiar</button>
+                </div>
+
+                <!-- Datos de identificación única (sin captura doble en caja) -->
+                <div class="client-inputs-grid">
+                    <div>
+                        <label style="font-size:0.78rem; color:#666; font-weight:600;">Tu Nombre (para expediente)</label>
+                        <input type="text" id="cliente-nombre-web" class="form-control" placeholder="Ej. Sofía Hernández">
+                    </div>
+                    <div>
+                        <label style="font-size:0.78rem; color:#666; font-weight:600;">Teléfono Celular (ID Único 10 díg.)</label>
+                        <input type="tel" id="cliente-tel-web" class="form-control" maxlength="10" placeholder="Ej. 3312345678">
+                    </div>
+                </div>
+
+                <ul id="lista-resumen" class="lista-resumen">
+                    <li><span>No has elegido ningún servicio</span></li>
+                </ul>
+                <div class="total-box">
+                    <span>Total:</span>
+                    <span>$<span id="total-precio">0</span></span>
+                </div>
+                <button class="btn-confirmar" onclick="abrirModal()">Confirmar Cita</button>
+            </div>
+        </div>
+
+        <!-- Botón WhatsApp Flotante -->
+        <a href="#" class="btn-wa-flotante" onclick="enviarWhatsAppDirecto(event)">
+            💬 WhatsApp (<span id="wa-count">0</span>)
+        </a>
+    </div>
+
+    <!-- =====================================================================
+         VISTA 2: ADMINISTRACIÓN INTERNA (POS COBRO ÚNICO, INVENTARIO Y 35%)
+         ===================================================================== -->
+    <div id="vista-admin" class="admin-container">
+        <div class="admin-header-banner">
+            <div>
+                <span style="font-size:0.75rem; text-transform:uppercase; letter-spacing:1.5px; color:#f48fb1; font-weight:600;">Sistema Centralizado en Tiempo Real</span>
+                <h2>Panel Interno de Administración — Cornelia</h2>
+                <p>Cobro único transaccional • Descuento automático de insumos SKU • Cálculo de comisiones (35%)</p>
+            </div>
+            <div class="admin-actions-top">
+                <button class="btn-export-csv" onclick="exportarCorteCSV()">📥 Exportar Corte CSV (UTF-8)</button>
+                <button class="btn-secondary-admin" onclick="reiniciarDatosDemo()">🔄 Restaurar Demo</button>
+            </div>
+        </div>
+
+        <!-- KPIs en Tiempo Real -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-label">Ingresos del Día (Caja Bruta)</div>
+                <div class="kpi-value" id="kpi-ingresos">$0</div>
+                <div class="kpi-sub" id="kpi-ingresos-sub">0 servicios cobrados • IVA inc.</div>
+            </div>
+            <div class="kpi-card navy">
+                <div class="kpi-label">Comisiones Devengadas (35%)</div>
+                <div class="kpi-value" id="kpi-comisiones">$0</div>
+                <div class="kpi-sub" id="kpi-comisiones-sub">EVA: $0 • SHANTAL: $0</div>
+            </div>
+            <div class="kpi-card teal">
+                <div class="kpi-label">Costo Insumos & Utilidad Bruta</div>
+                <div class="kpi-value" id="kpi-utilidad-bruta">$0</div>
+                <div class="kpi-sub" id="kpi-insumos-sub">Insumos consumidos: $0</div>
+            </div>
+            <div class="kpi-card amber">
+                <div class="kpi-label">Alertas de Inventario SKU</div>
+                <div class="kpi-value" id="kpi-alertas-stock">0</div>
+                <div class="kpi-sub">Insumos en punto de reorden</div>
+            </div>
+        </div>
+
+        <!-- Sub-navegación de Módulos Administrativos -->
+        <div class="admin-tabs">
+            <button class="admin-tab-btn active" onclick="cambiarTabAdmin(this, 'tab-pos')">💳 1. Cobro Único (POS) y Agenda</button>
+            <button class="admin-tab-btn" onclick="cambiarTabAdmin(this, 'tab-inventario')">📦 2. Inventario en Tiempo Real (SKU)</button>
+            <button class="admin-tab-btn" onclick="cambiarTabAdmin(this, 'tab-comisiones')">👩‍🎨 3. Comisiones (35%) y Corte de Caja</button>
+        </div>
+
+        <!-- TAB 1: COBRO ÚNICO (POS SIN CAPTURA DOBLE) -->
+        <div id="tab-pos" class="admin-panel active">
+            <div class="pos-layout">
+                <!-- Columna Izquierda: Citas Agendadas desde Portal Web -->
+                <div class="panel-box">
+                    <h3>📅 Citas Pendientes de Cobro</h3>
+                    <p class="panel-desc">Sincronizadas automáticamente desde el portal de clientas. Haz clic en «Cargar en Caja» para cobrar sin recapturar datos.</p>
+                    <div id="lista-citas-admin"></div>
+                </div>
+
+                <!-- Columna Derecha: Terminal de Cobro Único -->
+                <div class="panel-box">
+                    <h3>🧾 Terminal de Cobro Único (Sin Captura Doble)</h3>
+                    <p class="panel-desc">Un solo registro asienta la venta, descuenta los insumos por receta SKU y abona el 35% de comisión.</p>
+
+                    <input type="hidden" id="pos-cita-id" value="">
+
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label>Clienta</label>
+                            <input type="text" id="pos-cliente" class="form-control" placeholder="Nombre de la clienta">
+                        </div>
+                        <div class="form-group">
+                            <label>Teléfono (ID Expediente)</label>
+                            <input type="tel" id="pos-telefono" class="form-control" maxlength="10" placeholder="10 dígitos (Ej. 3312345678)">
+                        </div>
+                    </div>
+
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label>Especialista Actuante (35% Comisión)</label>
+                            <select id="pos-especialista" class="form-control" onchange="actualizarPreviewPOS()">
+                                <option value="EVA">EVA</option>
+                                <option value="SHANTAL">SHANTAL</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Método de Pago</label>
+                            <select id="pos-metodo-pago" class="form-control">
+                                <option value="Efectivo">Efectivo en Caja</option>
+                                <option value="Tarjeta TPV">Terminal Punto de Venta (TPV)</option>
+                                <option value="Transferencia SPEI">Transferencia Electrónica (SPEI)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom:10px;">
+                        <label>Agregar Servicio del Catálogo (29 Servicios)</label>
+                        <div class="pos-service-adder">
+                            <select id="pos-select-servicio" class="form-control"></select>
+                            <button type="button" class="btn-elegir" onclick="agregarServicioPOS()">+ Agregar</button>
+                        </div>
+                    </div>
+
+                    <ul id="pos-lista-servicios" class="pos-items-list">
+                        <li><span style="color:#888;">Selecciona una cita o agrega servicios para cobrar...</span></li>
+                    </ul>
+
+                    <!-- Previsualización Atómica Antes de Cobrar -->
+                    <div class="impact-preview-box">
+                        <div style="font-size:0.78rem; font-weight:700; color:var(--rosaOscuro); text-transform:uppercase; margin-bottom:8px;">
+                            ⚡ Propagación Automática al Registrar Cobro:
+                        </div>
+                        <div class="impact-grid">
+                            <div class="impact-metric">
+                                <small>Total Cobro Caja</small>
+                                <strong id="prev-total">$0.00</strong>
+                            </div>
+                            <div class="impact-metric pink">
+                                <small>Comisión 35% (<span id="prev-esp-lbl">EVA</span>)</small>
+                                <strong id="prev-comision">$0.00</strong>
+                            </div>
+                            <div class="impact-metric teal">
+                                <small>IVA Trasladado (16%)</small>
+                                <strong id="prev-iva">$0.00</strong>
+                            </div>
+                        </div>
+                        <div style="font-size:0.78rem; font-weight:600; color:var(--navy);">
+                            Insumos SKU a descontar automáticamente:
+                        </div>
+                        <div id="prev-sku-list" class="sku-preview-chips">
+                            <span class="sku-chip">Sin consumo aún</span>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn-confirmar" onclick="registrarCobroUnico()">
+                        ✅ Registrar Cobro Único y Actualizar Inventario / Comisión
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: INVENTARIO EN TIEMPO REAL -->
+        <div id="tab-inventario" class="admin-panel">
+            <div class="panel-box" style="margin-bottom:20px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+                    <div>
+                        <h3>📦 Control de Inventario e Insumos por SKU</h3>
+                        <p class="panel-desc" style="margin-bottom:0;">Cada servicio cobrado descuenta automáticamente las unidades exactas según su receta técnica.</p>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Código SKU</th>
+                                <th>Insumo / Consumible</th>
+                                <th>Unidad</th>
+                                <th>Costo Unit.</th>
+                                <th>Existencia Actual</th>
+                                <th>Stock Mínimo</th>
+                                <th>Estado</th>
+                                <th>Acción Proveedor</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-inventario"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Tabla de Recetas Técnicas por Servicio -->
+            <div class="panel-box">
+                <h3>🧪 Matriz de Consumo Técnico por Servicio (Recetas SKU)</h3>
+                <p class="panel-desc">Referencia transparente de cómo el sistema deduce insumos en tiempo real al cerrar cada servicio.</p>
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Categoría</th>
+                                <th>Servicio Oficial</th>
+                                <th>Precio Público</th>
+                                <th>Receta de Descuento Automático (SKU)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-recetas"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: COMISIONES 35% Y CORTE DE CAJA -->
+        <div id="tab-comisiones" class="admin-panel">
+            <div class="comisiones-grid" id="grid-comisiones-especialistas"></div>
+
+            <div class="panel-box">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+                    <div>
+                        <h3>📊 Bitácora Central de Ventas y Corte de Caja</h3>
+                        <p class="panel-desc" style="margin-bottom:0;">Historial auditado de cobros únicos con folio, método de pago y comisión del 35% calculada al instante.</p>
+                    </div>
+                    <select id="filtro-ventas-esp" class="form-control" style="max-width:220px;" onchange="renderTablaVentas()">
+                        <option value="TODOS">Todas las Especialistas</option>
+                        <option value="EVA">Solo EVA</option>
+                        <option value="SHANTAL">Solo SHANTAL</option>
+                    </select>
+                </div>
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Folio</th>
+                                <th>Hora</th>
+                                <th>Clienta (ID Tel.)</th>
+                                <th>Especialista</th>
+                                <th>Servicios Cobrados</th>
+                                <th>Método Pago</th>
+                                <th>Total Cobrado</th>
+                                <th>Comisión (35%)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-ventas"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Confirmación de Cita (Portal Clienta) -->
+    <div id="modal-confirmacion" class="modal">
+        <div class="modal-content">
+            <button class="btn-cerrar" onclick="cerrarModal('modal-confirmacion')">✕</button>
+            <h3>¡Confirmación de Cita! ✨</h3>
+            <p style="margin: 10px 0 16px 0; font-size: 0.9rem; color: #666; text-align:center;">
+                Tu horario ha sido bloqueado en tiempo real y enviado a recepción:
+            </p>
+            <div id="modal-detalle" style="background: var(--rosaClaro); padding: 18px; border-radius: 12px; font-size: 0.9rem; margin-bottom: 18px;"></div>
+            <button class="btn-confirmar" onclick="enviarWhatsApp()">Enviar Reserva a WhatsApp</button>
+        </div>
+    </div>
+
+    <!-- Modal Acceso Administración (PIN Demo 1234) -->
+    <div id="modal-pin" class="modal" onclick="if(event.target === this) cerrarModal('modal-pin')">
+        <div class="modal-content" style="max-width:400px; text-align:center;">
+            <button class="btn-cerrar" onclick="cerrarModal('modal-pin')">✕</button>
+            <h3>🔐 Acceso Administración</h3>
+            <p style="font-size:0.88rem; color:#666; margin-bottom:16px;">
+                Ingresa el PIN interno de gerencia / recepción y presiona <strong>Enter</strong> para acceder a estimaciones, POS, inventario y comisiones.
+            </p>
+            <form onsubmit="event.preventDefault(); validarPinAdmin();">
+                <input type="password" id="input-pin-admin" class="form-control" inputmode="numeric" maxlength="4" placeholder="PIN: 1234" onkeydown="if(event.key === 'Enter') { event.preventDefault(); validarPinAdmin(); }" style="text-align:center; font-size:1.25rem; letter-spacing:6px; margin-bottom:10px;">
+                <div id="pin-error-msg" style="display:none; color:var(--rojo); font-size:0.82rem; font-weight:600; margin-bottom:8px;">
+                    PIN incorrecto. Usa el PIN de demostración: 1234
+                </div>
+                <button type="submit" class="btn-confirmar" style="margin-top:4px;">Ingresar al Panel (Enter)</button>
+            </form>
+            <button type="button" onclick="accesoDirectoDemo()" style="margin-top:12px; background:none; border:none; color:var(--rosaOscuro); font-size:0.84rem; font-weight:600; cursor:pointer; text-decoration:underline;">
+                ⚡ Entrar directo con PIN Demo (1234)
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal Ticket Digital Generado tras Cobro Único -->
+    <div id="modal-ticket" class="modal">
+        <div class="modal-content">
+            <button class="btn-cerrar" onclick="cerrarModal('modal-ticket')">✕</button>
+            <h3>✅ Cobro Único Registrado</h3>
+            <p style="font-size:0.85rem; color:#666; text-align:center; margin-bottom:14px;">
+                Se actualizaron simultáneamente Caja, Inventario SKU y Nómina (35%).
+            </p>
+            <div id="ticket-contenido" style="background:#f8fafc; border:1px dashed #94a3b8; padding:16px; border-radius:12px; font-size:0.88rem; line-height:1.5;"></div>
+            <button class="btn-confirmar" onclick="cerrarModal('modal-ticket')">Listo</button>
+        </div>
+    </div>
+
+    <script>
+        // =========================================================================
+        // 1. CATÁLOGO DE 29 SERVICIOS Y RECETAS TÉCNICAS DE CONSUMO SKU
+        // =========================================================================
+        const catalogoServicios = [
+            // MANOS (17)
+            { id: 'SRV-01', categoria: 'Manos', nombre: 'Manicure Ruso con esmalte', precio: 280, receta: { 'SKU-008': 1, 'SKU-009': 3, 'SKU-011': 2, 'SKU-012': 2 } },
+            { id: 'SRV-02', categoria: 'Manos', nombre: 'Manicure Ruso con shellac liso', precio: 350, receta: { 'SKU-001': 3, 'SKU-002': 2, 'SKU-003': 2, 'SKU-008': 1, 'SKU-012': 2 } },
+            { id: 'SRV-03', categoria: 'Manos', nombre: 'Manicure Spa con shellac liso', precio: 400, receta: { 'SKU-001': 3, 'SKU-002': 2, 'SKU-003': 2, 'SKU-008': 1, 'SKU-011': 5, 'SKU-012': 2 } },
+            { id: 'SRV-04', categoria: 'Manos', nombre: 'Manicure Spa con esmalte', precio: 340, receta: { 'SKU-008': 1, 'SKU-009': 3, 'SKU-011': 5, 'SKU-012': 2 } },
+            { id: 'SRV-05', categoria: 'Manos', nombre: 'Rubber con color', precio: 350, receta: { 'SKU-001': 3, 'SKU-002': 4, 'SKU-003': 2, 'SKU-008': 1, 'SKU-012': 2 } },
+            { id: 'SRV-06', categoria: 'Manos', nombre: 'Acrigel color liso', precio: 400, receta: { 'SKU-001': 3, 'SKU-004': 4, 'SKU-005': 5, 'SKU-003': 2, 'SKU-008': 1, 'SKU-012': 2 } },
+            { id: 'SRV-07', categoria: 'Manos', nombre: 'Uñas Acrílicas con tip liso', precio: 430, receta: { 'SKU-004': 5, 'SKU-005': 7, 'SKU-007': 10, 'SKU-003': 2, 'SKU-008': 1, 'SKU-012': 2 } },
+            { id: 'SRV-08', categoria: 'Manos', nombre: 'Uñas Esculturales', precio: 500, receta: { 'SKU-004': 6, 'SKU-005': 8, 'SKU-001': 3, 'SKU-003': 2, 'SKU-008': 1, 'SKU-012': 2 } },
+            { id: 'SRV-09', categoria: 'Manos', nombre: 'Baño de Acrílico', precio: 350, receta: { 'SKU-004': 4, 'SKU-005': 5, 'SKU-003': 2, 'SKU-008': 1, 'SKU-012': 2 } },
+            { id: 'SRV-10', categoria: 'Manos', nombre: 'Poligel alargamiento en tip', precio: 420, receta: { 'SKU-006': 5, 'SKU-007': 10, 'SKU-003': 2, 'SKU-008': 1, 'SKU-012': 2 } },
+            { id: 'SRV-11', categoria: 'Manos', nombre: 'Poligel escultural', precio: 500, receta: { 'SKU-006': 6, 'SKU-001': 3, 'SKU-003': 2, 'SKU-008': 1, 'SKU-012': 2 } },
+            { id: 'SRV-12', categoria: 'Manos', nombre: 'Poligel en uña natural', precio: 380, receta: { 'SKU-006': 4, 'SKU-003': 2, 'SKU-008': 1, 'SKU-012': 2 } },
+            { id: 'SRV-13', categoria: 'Manos', nombre: 'Uñas Press-On color liso', precio: 460, receta: { 'SKU-007': 10, 'SKU-002': 3, 'SKU-001': 3, 'SKU-003': 2, 'SKU-008': 1 } },
+            { id: 'SRV-14', categoria: 'Manos', nombre: 'Uñas Soft Gel color liso', precio: 500, receta: { 'SKU-007': 10, 'SKU-002': 4, 'SKU-001': 3, 'SKU-003': 2, 'SKU-008': 1, 'SKU-012': 2 } },
+            { id: 'SRV-15', categoria: 'Manos', nombre: 'Esmalte Regular', precio: 120, receta: { 'SKU-009': 2, 'SKU-012': 1 } },
+            { id: 'SRV-16', categoria: 'Manos', nombre: 'Aplicación de Shellac', precio: 180, receta: { 'SKU-001': 3, 'SKU-002': 2, 'SKU-003': 2, 'SKU-012': 1 } },
+            { id: 'SRV-17', categoria: 'Manos', nombre: 'Base Calcio', precio: 100, receta: { 'SKU-010': 2, 'SKU-012': 1 } },
+            // PIES (12)
+            { id: 'SRV-18', categoria: 'Pies', nombre: 'Rubber con color (Pies)', precio: 360, receta: { 'SKU-001': 3, 'SKU-002': 4, 'SKU-003': 2, 'SKU-008': 1, 'SKU-012': 2 } },
+            { id: 'SRV-19', categoria: 'Pies', nombre: 'Aplicación de shellac (Pies)', precio: 180, receta: { 'SKU-001': 3, 'SKU-002': 2, 'SKU-003': 2, 'SKU-012': 1 } },
+            { id: 'SRV-20', categoria: 'Pies', nombre: 'Acripie por uña', precio: 80, receta: { 'SKU-004': 1, 'SKU-005': 2, 'SKU-008': 1 } },
+            { id: 'SRV-21', categoria: 'Pies', nombre: 'Acripie con shellac', precio: 400, receta: { 'SKU-004': 3, 'SKU-005': 4, 'SKU-001': 3, 'SKU-003': 2, 'SKU-008': 1, 'SKU-012': 2 } },
+            { id: 'SRV-22', categoria: 'Pies', nombre: 'Acripie sin shellac', precio: 250, receta: { 'SKU-004': 3, 'SKU-005': 4, 'SKU-003': 2, 'SKU-008': 1, 'SKU-012': 2 } },
+            { id: 'SRV-23', categoria: 'Pies', nombre: 'Base Calcio (Pies)', precio: 100, receta: { 'SKU-010': 2, 'SKU-012': 1 } },
+            { id: 'SRV-24', categoria: 'Pies', nombre: 'Pedicure Ruso con shellac', precio: 400, receta: { 'SKU-001': 3, 'SKU-002': 2, 'SKU-003': 2, 'SKU-008': 1, 'SKU-011': 4, 'SKU-012': 2 } },
+            { id: 'SRV-25', categoria: 'Pies', nombre: 'Pedicure Ruso con esmalte', precio: 360, receta: { 'SKU-008': 1, 'SKU-009': 3, 'SKU-011': 4, 'SKU-012': 2 } },
+            { id: 'SRV-26', categoria: 'Pies', nombre: 'Pedicure Básico con shellac', precio: 460, receta: { 'SKU-001': 3, 'SKU-002': 2, 'SKU-003': 2, 'SKU-008': 1, 'SKU-011': 6, 'SKU-012': 2 } },
+            { id: 'SRV-27', categoria: 'Pies', nombre: 'Pedicure Básico con esmalte', precio: 400, receta: { 'SKU-008': 1, 'SKU-009': 3, 'SKU-011': 6, 'SKU-012': 2 } },
+            { id: 'SRV-28', categoria: 'Pies', nombre: 'Pedicure Spa con shellac', precio: 550, receta: { 'SKU-001': 3, 'SKU-002': 2, 'SKU-003': 2, 'SKU-008': 1, 'SKU-011': 10, 'SKU-012': 3 } },
+            { id: 'SRV-29', categoria: 'Pies', nombre: 'Pedicure Spa con esmalte', precio: 500, receta: { 'SKU-008': 1, 'SKU-009': 3, 'SKU-011': 10, 'SKU-012': 3 } }
+        ];
+
+        const COMISION_PCT = 0.35; // 35% fijo por política del estudio
+        const numeroTelefono = "523350466144";
+
+        // =========================================================================
+        // 2. ESTADO INICIAL (PERSISTENTE EN LOCALSTORAGE)
+        // =========================================================================
+        const defaultState = {
+            horariosPorEspecialista: {
+                'EVA': [
+                    { hora: '10:00 AM', ocupado: false },
+                    { hora: '11:30 AM', ocupado: true },
+                    { hora: '01:00 PM', ocupado: false },
+                    { hora: '02:30 PM', ocupado: true },
+                    { hora: '04:00 PM', ocupado: false },
+                    { hora: '05:30 PM', ocupado: false }
+                ],
+                'SHANTAL': [
+                    { hora: '10:00 AM', ocupado: true },
+                    { hora: '11:30 AM', ocupado: false },
+                    { hora: '01:00 PM', ocupado: true },
+                    { hora: '02:30 PM', ocupado: false },
+                    { hora: '04:00 PM', ocupado: true },
+                    { hora: '05:30 PM', ocupado: false }
+                ]
+            },
+            inventario: [
+                { sku: 'SKU-001', nombre: 'Gel Semipermanente / Shellac Color', unidad: 'ml', costoUnit: 8.50, stock: 180, minimo: 45, recarga: 120 },
+                { sku: 'SKU-002', nombre: 'Base Coat / Rubber Gel Nivelador', unidad: 'ml', costoUnit: 9.00, stock: 140, minimo: 40, recarga: 100 },
+                { sku: 'SKU-003', nombre: 'Top Coat Brillo Cristal UV/LED', unidad: 'ml', costoUnit: 9.50, stock: 125, minimo: 35, recarga: 100 },
+                { sku: 'SKU-004', nombre: 'Polvo Acrílico Cristal / Cover', unidad: 'g', costoUnit: 4.20, stock: 260, minimo: 60, recarga: 200 },
+                { sku: 'SKU-005', nombre: 'Monómero Líquido Bajo Aroma', unidad: 'ml', costoUnit: 3.80, stock: 310, minimo: 80, recarga: 250 },
+                { sku: 'SKU-006', nombre: 'Poligel Tubo Constructor', unidad: 'g', costoUnit: 7.50, stock: 95, minimo: 30, recarga: 90 },
+                { sku: 'SKU-007', nombre: 'Tips Naturales / Soft Gel Caja', unidad: 'pza', costoUnit: 1.40, stock: 420, minimo: 100, recarga: 300 },
+                { sku: 'SKU-008', nombre: 'Lima Profesional 100/180 Desechable', unidad: 'pza', costoUnit: 6.00, stock: 42, minimo: 25, recarga: 50 },
+                { sku: 'SKU-009', nombre: 'Esmalte Tradicional & Removedor', unidad: 'ml', costoUnit: 2.50, stock: 210, minimo: 50, recarga: 150 },
+                { sku: 'SKU-010', nombre: 'Base Calcio Fortalecedora', unidad: 'ml', costoUnit: 6.50, stock: 48, minimo: 15, recarga: 45 },
+                { sku: 'SKU-011', nombre: 'Sales Spa, Exfoliante y Aceite Cutícula', unidad: 'ml', costoUnit: 3.10, stock: 190, minimo: 50, recarga: 150 },
+                { sku: 'SKU-012', nombre: 'Gasas Sin Pelusa y Sanitizante Clínico', unidad: 'pza', costoUnit: 1.80, stock: 160, minimo: 40, recarga: 120 }
+            ],
+            citasPendientes: [
+                {
+                    id: 'CIT-101',
+                    cliente: 'Mariana López',
+                    telefono: '3314892011',
+                    especialista: 'EVA',
+                    hora: '11:30 AM',
+                    servicios: [
+                        { nombre: 'Manicure Ruso con shellac liso', precio: 350 },
+                        { nombre: 'Base Calcio', precio: 100 }
+                    ]
+                },
+                {
+                    id: 'CIT-102',
+                    cliente: 'Fernanda Ríos',
+                    telefono: '3328904412',
+                    especialista: 'SHANTAL',
+                    hora: '01:00 PM',
+                    servicios: [
+                        { nombre: 'Uñas Esculturales', precio: 500 }
+                    ]
+                },
+                {
+                    id: 'CIT-103',
+                    cliente: 'Camila Mendoza',
+                    telefono: '3319023345',
+                    especialista: 'EVA',
+                    hora: '02:30 PM',
+                    servicios: [
+                        { nombre: 'Rubber con color', precio: 350 },
+                        { nombre: 'Pedicure Básico con shellac', precio: 460 }
+                    ]
+                }
+            ],
+            ventas: [
+                {
+                    folio: 'VTA-001',
+                    hora: '10:45 AM',
+                    cliente: 'Valeria Gómez',
+                    telefono: '3311223344',
+                    especialista: 'SHANTAL',
+                    servicios: ['Pedicure Spa con shellac'],
+                    metodoPago: 'Tarjeta TPV',
+                    total: 550.00,
+                    comision: 192.50,
+                    costoInsumos: 84.90
+                },
+                {
+                    folio: 'VTA-002',
+                    hora: '11:15 AM',
+                    cliente: 'Andrea Torres',
+                    telefono: '3344556677',
+                    especialista: 'EVA',
+                    servicios: ['Uñas Acrílicas con tip liso'],
+                    metodoPago: 'Efectivo',
+                    total: 430.00,
+                    comision: 150.50,
+                    costoInsumos: 75.20
+                }
+            ]
+        };
+
+        let appState = cargarEstado();
+        let adminAutenticado = false;
+
+        // Variables Vista Clienta
+        let especialistaSeleccionada = 'EVA';
+        let horarioSeleccionado = '';
+        let carrito = [];
+        let total = 0;
+
+        // Variables Vista Admin POS
+        let posCarrito = [];
+
+        function cargarEstado() {
+            try {
+                const saved = localStorage.getItem('cornelia_erp_state_v1');
+                if (saved) return JSON.parse(saved);
+            } catch (e) {}
+            return JSON.parse(JSON.stringify(defaultState));
+        }
+
+        function guardarEstado() {
+            try {
+                localStorage.setItem('cornelia_erp_state_v1', JSON.stringify(appState));
+            } catch (e) {}
+            actualizarBadgeCitas();
+        }
+
+        function reiniciarDatosDemo() {
+            appState = JSON.parse(JSON.stringify(defaultState));
+            guardarEstado();
+            renderHorarios();
+            refrescarTodoAdmin();
+            alert('Datos de demostración restaurados correctamente.');
+        }
+
+        // =========================================================================
+        // 3. NAVEGACIÓN ENTRE VISTA CLIENTA Y VISTA ADMINISTRACIÓN
+        // =========================================================================
+        function cambiarModoVista(modo) {
+            const vClienta = document.getElementById('vista-clienta');
+            const vAdmin = document.getElementById('vista-admin');
+            const bClienta = document.getElementById('btn-mode-clienta');
+            const bAdmin = document.getElementById('btn-mode-admin');
+
+            if (modo === 'clienta') {
+                vClienta.style.display = 'block';
+                vAdmin.style.display = 'none';
+                bClienta.classList.add('active');
+                bAdmin.classList.remove('active');
+                renderHorarios();
+            } else {
+                vClienta.style.display = 'none';
+                vAdmin.style.display = 'block';
+                bClienta.classList.remove('active');
+                bAdmin.classList.add('active');
+                refrescarTodoAdmin();
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function solicitarAccesoAdmin() {
+            if (adminAutenticado) {
+                cambiarModoVista('admin');
+            } else {
+                const inputPin = document.getElementById('input-pin-admin');
+                const errDiv = document.getElementById('pin-error-msg');
+                inputPin.value = '';
+                if (errDiv) errDiv.style.display = 'none';
+                document.getElementById('modal-pin').style.display = 'flex';
+                setTimeout(() => inputPin.focus(), 50);
+            }
+        }
+
+        function validarPinAdmin() {
+            const inputPin = document.getElementById('input-pin-admin');
+            const errDiv = document.getElementById('pin-error-msg');
+            const pin = inputPin.value.trim();
+            if (pin === '1234') {
+                adminAutenticado = true;
+                if (errDiv) errDiv.style.display = 'none';
+                cerrarModal('modal-pin');
+                cambiarModoVista('admin');
+            } else {
+                if (errDiv) errDiv.style.display = 'block';
+                inputPin.focus();
+                inputPin.select();
+            }
+        }
+
+        function accesoDirectoDemo() {
+            adminAutenticado = true;
+            cerrarModal('modal-pin');
+            cambiarModoVista('admin');
+        }
+
+        function actualizarBadgeCitas() {
+            document.getElementById('badge-citas-pendientes').innerText = appState.citasPendientes.length;
+        }
+
+        // =========================================================================
+        // 4. LÓGICA PORTAL DE CLIENTAS (RESERVAS EN TIEMPO REAL)
+        // =========================================================================
+        function cambiarEspecialista(el, nombre) {
+            document.querySelectorAll('.radio-group .radio-btn').forEach(btn => btn.classList.remove('active'));
+            el.classList.add('active');
+            especialistaSeleccionada = nombre;
+            horarioSeleccionado = '';
+            document.getElementById('nombre-especialista').innerText = nombre;
+            renderHorarios();
+        }
+
+        function obtenerHorariosVista(esp) {
+            if (esp === 'EVA' || esp === 'SHANTAL') {
+                return appState.horariosPorEspecialista[esp];
+            }
+            // ALEATORIO: disponible si EVA o SHANTAL tienen el bloque libre
+            const evaList = appState.horariosPorEspecialista['EVA'];
+            const shaList = appState.horariosPorEspecialista['SHANTAL'];
+            return evaList.map((item, idx) => ({
+                hora: item.hora,
+                ocupado: item.ocupado && shaList[idx].ocupado
+            }));
+        }
+
+        function renderHorarios() {
+            const grid = document.getElementById('grid-horarios');
+            const listaHorarios = obtenerHorariosVista(especialistaSeleccionada);
+            
+            grid.innerHTML = listaHorarios.map(h => {
+                if (h.ocupado) {
+                    return `<button class="horario-btn ocupado" disabled title="Ocupado">${h.hora}</button>`;
+                } else {
+                    const esActivo = horarioSeleccionado === h.hora ? 'active' : '';
+                    return `<button class="horario-btn ${esActivo}" onclick="seleccionarHorario(this, '${h.hora}')">${h.hora}</button>`;
+                }
+            }).join('');
+        }
+
+        function seleccionarHorario(btn, hora) {
+            document.querySelectorAll('.horario-btn').forEach(b => {
+                if(!b.classList.contains('ocupado')) b.classList.remove('active');
+            });
+            btn.classList.add('active');
+            horarioSeleccionado = hora;
+        }
+
+        function toggleAcordeon(header) {
+            header.parentElement.classList.toggle('active');
+        }
+
+        function agregar(nombre, precio) {
+            carrito.push({ nombre, precio });
+            total += precio;
+            actualizarUI();
+        }
+
+        function eliminarItemClienta(idx) {
+            total -= carrito[idx].precio;
+            carrito.splice(idx, 1);
+            actualizarUI();
+        }
+
+        function limpiarTodo() {
+            carrito = [];
+            total = 0;
+            actualizarUI();
+        }
+
+        function actualizarUI() {
+            const listaHTML = document.getElementById('lista-resumen');
+            const totalHTML = document.getElementById('total-precio');
+            const waCount = document.getElementById('wa-count');
+
+            if (carrito.length === 0) {
+                listaHTML.innerHTML = '<li><span>No has elegido ningún servicio</span></li>';
+            } else {
+                listaHTML.innerHTML = carrito.map((i, idx) => `
+                    <li>
+                        <span>${i.nombre}</span>
+                        <span>$${i.precio} <button class="btn-del-mini" onclick="eliminarItemClienta(${idx})" title="Quitar">✕</button></span>
+                    </li>
+                `).join('');
+            }
+
+            totalHTML.innerText = total;
+            waCount.innerText = carrito.length;
+        }
+
+        function abrirModal() {
+            if (carrito.length === 0) {
+                alert('Por favor selecciona al menos un servicio.');
+                return;
+            }
+            if (!horarioSeleccionado) {
+                alert('Por favor selecciona un horario disponible para tu especialista.');
+                return;
+            }
+
+            const nombreCli = document.getElementById('cliente-nombre-web').value.trim() || 'Clienta Web';
+            const telCli = document.getElementById('cliente-tel-web').value.trim() || '3300000000';
+
+            // Resolver especialista si eligió ALEATORIO
+            let espAsignada = especialistaSeleccionada;
+            if (espAsignada === 'ALEATORIO') {
+                const evaSlot = appState.horariosPorEspecialista['EVA'].find(s => s.hora === horarioSeleccionado);
+                espAsignada = (evaSlot && !evaSlot.ocupado) ? 'EVA' : 'SHANTAL';
+            }
+
+            // Bloquear horario en tiempo real
+            const slotObj = appState.horariosPorEspecialista[espAsignada].find(s => s.hora === horarioSeleccionado);
+            if (slotObj) slotObj.ocupado = true;
+
+            // Enviar automáticamente a la cola de Administración POS (cero captura doble)
+            const nuevaCita = {
+                id: 'CIT-' + (100 + appState.citasPendientes.length + appState.ventas.length + 1),
+                cliente: nombreCli,
+                telefono: telCli,
+                especialista: espAsignada,
+                hora: horarioSeleccionado,
+                servicios: JSON.parse(JSON.stringify(carrito))
+            };
+            appState.citasPendientes.unshift(nuevaCita);
+            guardarEstado();
+
+            let detalle = `<strong>Folio Reserva:</strong> ${nuevaCita.id}<br>`;
+            detalle += `<strong>Clienta:</strong> ${nombreCli} (${telCli})<br>`;
+            detalle += `<strong>Especialista:</strong> ${espAsignada}<br>`;
+            detalle += `<strong>Horario bloqueado:</strong> ${horarioSeleccionado}<br><br>`;
+            detalle += `<strong>Servicios:</strong><br>`;
+            carrito.forEach(i => {
+                detalle += `• ${i.nombre} ($${i.precio})<br>`;
+            });
+            detalle += `<br><strong>Total estimado:</strong> $${total}`;
+
+            document.getElementById('modal-detalle').innerHTML = detalle;
+            document.getElementById('modal-confirmacion').style.display = 'flex';
+
+            horarioSeleccionado = '';
+            renderHorarios();
+        }
+
+        function cerrarModal(idModal) {
+            document.getElementById(idModal).style.display = 'none';
+        }
+
+        function generarMensajeWA() {
+            const nombreCli = document.getElementById('cliente-nombre-web').value.trim() || 'Clienta Web';
+            let mensaje = `*CORNELIA NAIL STUDIO*\n\n`;
+            mensaje += `👩 *Clienta:* ${nombreCli}\n`;
+            mensaje += `👤 *Especialista:* ${especialistaSeleccionada}\n`;
+            mensaje += `⏰ *Horario:* ${horarioSeleccionado || 'Confirmado en Web'}\n\n`;
+            mensaje += `💅 *Servicios solicitados:*\n`;
+            carrito.forEach(i => {
+                mensaje += `• ${i.nombre} - $${i.precio}\n`;
+            });
+            mensaje += `\n💰 *Total estimado:* $${total}`;
+            return encodeURIComponent(mensaje);
+        }
+
+        function enviarWhatsApp() {
+            window.open(`https://wa.me/${numeroTelefono}?text=${generarMensajeWA()}`, '_blank');
+        }
+
+        function enviarWhatsAppDirecto(e) {
+            e.preventDefault();
+            if (carrito.length === 0 || !horarioSeleccionado) {
+                abrirModal();
+                return;
+            }
+            enviarWhatsApp();
+        }
+
+        // =========================================================================
+        // 5. LÓGICA DE ADMINISTRACIÓN (POS, INVENTARIO SKU Y COMISIONES 35%)
+        // =========================================================================
+        function cambiarTabAdmin(btn, tabId) {
+            document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        function poblarSelectServiciosPOS() {
+            const sel = document.getElementById('pos-select-servicio');
+            const manos = catalogoServicios.filter(s => s.categoria === 'Manos');
+            const pies = catalogoServicios.filter(s => s.categoria === 'Pies');
+
+            sel.innerHTML = `
+                <optgroup label="Servicios de Manos (17)">
+                    ${manos.map(s => `<option value="${s.nombre}">${s.nombre} — $${s.precio}</option>`).join('')}
+                </optgroup>
+                <optgroup label="Servicios de Pies (12)">
+                    ${pies.map(s => `<option value="${s.nombre}">${s.nombre} — $${s.precio}</option>`).join('')}
+                </optgroup>
+            `;
+        }
+
+        function renderCitasPendientes() {
+            const cont = document.getElementById('lista-citas-admin');
+            if (appState.citasPendientes.length === 0) {
+                cont.innerHTML = `<div style="padding:18px; background:#f8fafc; border-radius:12px; text-align:center; color:#64748b; font-size:0.86rem;">
+                    No hay citas pendientes por cobrar. Puedes registrar un cobro directo en el POS o agendar desde el Portal Clientas.
+                </div>`;
+                return;
+            }
+
+            cont.innerHTML = appState.citasPendientes.map(c => {
+                const subtotal = c.servicios.reduce((acc, s) => acc + s.precio, 0);
+                return `
+                    <div class="cita-card">
+                        <div class="cita-top">
+                            <span class="tag-esp">${c.especialista}</span>
+                            <span class="tag-hora">⏰ ${c.hora} • ${c.id}</span>
+                        </div>
+                        <div style="font-weight:600; font-size:0.95rem; color:var(--navy);">${c.cliente}</div>
+                        <div style="font-size:0.78rem; color:#64748b; margin-bottom:6px;">Tel: ${c.telefono}</div>
+                        <div style="font-size:0.82rem; color:#334155;">
+                            ${c.servicios.map(s => `• ${s.nombre} ($${s.precio})`).join('<br>')}
+                        </div>
+                        <div style="margin-top:8px; font-weight:700; color:var(--rosaOscuro); font-size:0.9rem;">
+                            Total a cobrar: $${subtotal.toFixed(2)} MXN
+                        </div>
+                        <button class="btn-cargar-cita" onclick="cargarCitaEnPOS('${c.id}')">
+                            Cargar en Caja (Cobro Único) →
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function cargarCitaEnPOS(citaId) {
+            const cita = appState.citasPendientes.find(c => c.id === citaId);
+            if (!cita) return;
+
+            document.getElementById('pos-cita-id').value = cita.id;
+            document.getElementById('pos-cliente').value = cita.cliente;
+            document.getElementById('pos-telefono').value = cita.telefono;
+            document.getElementById('pos-especialista').value = cita.especialista;
+            posCarrito = JSON.parse(JSON.stringify(cita.servicios));
+
+            renderCarritoPOS();
+        }
+
+        function agregarServicioPOS() {
+            const nombreSel = document.getElementById('pos-select-servicio').value;
+            const srv = catalogoServicios.find(s => s.nombre === nombreSel);
+            if (!srv) return;
+            posCarrito.push({ nombre: srv.nombre, precio: srv.precio });
+            renderCarritoPOS();
+        }
+
+        function quitarServicioPOS(idx) {
+            posCarrito.splice(idx, 1);
+            renderCarritoPOS();
+        }
+
+        function renderCarritoPOS() {
+            const ul = document.getElementById('pos-lista-servicios');
+            if (posCarrito.length === 0) {
+                ul.innerHTML = '<li><span style="color:#888;">Selecciona una cita o agrega servicios para cobrar...</span></li>';
+            } else {
+                ul.innerHTML = posCarrito.map((item, idx) => `
+                    <li>
+                        <span>${item.nombre}</span>
+                        <span><strong>$${item.precio}</strong> <button class="btn-del-mini" onclick="quitarServicioPOS(${idx})">✕</button></span>
+                    </li>
+                `).join('');
+            }
+            actualizarPreviewPOS();
+        }
+
+        function calcularConsumoInsumos(listaServicios) {
+            const consumoTotal = {}; // { 'SKU-001': qty }
+            listaServicios.forEach(item => {
+                const srv = catalogoServicios.find(s => s.nombre === item.nombre);
+                if (srv && srv.receta) {
+                    Object.entries(srv.receta).forEach(([sku, qty]) => {
+                        consumoTotal[sku] = (consumoTotal[sku] || 0) + qty;
+                    });
+                }
+            });
+            return consumoTotal;
+        }
+
+        function actualizarPreviewPOS() {
+            const totalCobro = posCarrito.reduce((sum, item) => sum + item.precio, 0);
+            const comision = totalCobro * COMISION_PCT;
+            const iva = totalCobro - (totalCobro / 1.16);
+            const esp = document.getElementById('pos-especialista').value;
+
+            document.getElementById('prev-total').innerText = `$${totalCobro.toFixed(2)}`;
+            document.getElementById('prev-comision').innerText = `$${comision.toFixed(2)}`;
+            document.getElementById('prev-iva').innerText = `$${iva.toFixed(2)}`;
+            document.getElementById('prev-esp-lbl').innerText = esp;
+
+            const consumo = calcularConsumoInsumos(posCarrito);
+            const chipsDiv = document.getElementById('prev-sku-list');
+            const entries = Object.entries(consumo);
+
+            if (entries.length === 0) {
+                chipsDiv.innerHTML = '<span class="sku-chip">Sin consumo aún</span>';
+            } else {
+                chipsDiv.innerHTML = entries.map(([sku, qty]) => {
+                    const invItem = appState.inventario.find(i => i.sku === sku);
+                    const nombreCorto = invItem ? invItem.nombre.split(' ')[0] + ' ' + (invItem.nombre.split(' ')[1] || '') : sku;
+                    const unidad = invItem ? invItem.unidad : '';
+                    return `<span class="sku-chip"><strong>${sku}</strong> (${nombreCorto}): -${qty} ${unidad}</span>`;
+                }).join('');
+            }
+        }
+
+        function registrarCobroUnico() {
+            if (posCarrito.length === 0) {
+                alert('Agrega al menos un servicio antes de registrar el cobro.');
+                return;
+            }
+
+            const cliente = document.getElementById('pos-cliente').value.trim() || 'Clienta Mostrador';
+            const telefono = document.getElementById('pos-telefono').value.trim() || '3300000000';
+            const especialista = document.getElementById('pos-especialista').value;
+            const metodoPago = document.getElementById('pos-metodo-pago').value;
+            const citaId = document.getElementById('pos-cita-id').value;
+
+            const totalCobro = posCarrito.reduce((sum, item) => sum + item.precio, 0);
+            const comision = Number((totalCobro * COMISION_PCT).toFixed(2));
+            const consumo = calcularConsumoInsumos(posCarrito);
+
+            // 1. Descontar automáticamente inventario y calcular costo directo de insumos
+            let costoInsumosVenta = 0;
+            const resumenDescuento = [];
+
+            Object.entries(consumo).forEach(([sku, qty]) => {
+                const invItem = appState.inventario.find(i => i.sku === sku);
+                if (invItem) {
+                    invItem.stock = Math.max(0, Number((invItem.stock - qty).toFixed(2)));
+                    costoInsumosVenta += qty * invItem.costoUnit;
+                    resumenDescuento.push(`${invItem.sku} (${invItem.nombre}): -${qty} ${invItem.unidad} → Quedan ${invItem.stock} ${invItem.unidad}`);
+                }
+            });
+
+            // 2. Generar folio único de venta
+            const folio = 'VTA-' + String(appState.ventas.length + 1).padStart(3, '0');
+            const ahora = new Date();
+            const horaStr = ahora.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
+
+            const nuevaVenta = {
+                folio,
+                hora: horaStr,
+                cliente,
+                telefono,
+                especialista,
+                servicios: posCarrito.map(s => s.nombre),
+                metodoPago,
+                total: totalCobro,
+                comision,
+                costoInsumos: Number(costoInsumosVenta.toFixed(2))
+            };
+            appState.ventas.unshift(nuevaVenta);
+
+            // 3. Remover cita de pendientes si venía de la agenda
+            if (citaId) {
+                appState.citasPendientes = appState.citasPendientes.filter(c => c.id !== citaId);
+            }
+
+            guardarEstado();
+
+            // 4. Mostrar Ticket Digital Confirmatorio
+            document.getElementById('ticket-contenido').innerHTML = `
+                <strong>Folio Transaccional:</strong> ${folio} (${horaStr})<br>
+                <strong>Clienta:</strong> ${cliente} (ID: ${telefono})<br>
+                <strong>Especialista:</strong> ${especialista}<br>
+                <strong>Método de Pago:</strong> ${metodoPago}<br>
+                <hr style="margin:8px 0; border:none; border-top:1px dashed #cbd5e1;">
+                <strong>Servicios Cobrados:</strong><br>
+                ${posCarrito.map(s => `• ${s.nombre}: $${s.precio.toFixed(2)}`).join('<br>')}<br>
+                <hr style="margin:8px 0; border:none; border-top:1px dashed #cbd5e1;">
+                <strong>Total Ingresado en Caja:</strong> $${totalCobro.toFixed(2)} MXN<br>
+                <strong style="color:var(--rosaOscuro);">Comisión Abonada (35% a ${especialista}):</strong> $${comision.toFixed(2)} MXN<br>
+                <strong style="color:var(--verde);">Descuento Automático de Almacén:</strong><br>
+                <small>${resumenDescuento.join('<br>')}</small>
+            `;
+            document.getElementById('modal-ticket').style.display = 'flex';
+
+            // Limpiar formulario POS
+            document.getElementById('pos-cita-id').value = '';
+            document.getElementById('pos-cliente').value = '';
+            document.getElementById('pos-telefono').value = '';
+            posCarrito = [];
+            renderCarritoPOS();
+            refrescarTodoAdmin();
+        }
+
+        function reabastecerSKU(sku) {
+            const item = appState.inventario.find(i => i.sku === sku);
+            if (!item) return;
+            item.stock += item.recarga;
+            guardarEstado();
+            refrescarTodoAdmin();
+        }
+
+        function renderTablaInventario() {
+            const tbody = document.getElementById('tbody-inventario');
+            tbody.innerHTML = appState.inventario.map(item => {
+                let statusHTML = `<span class="status-pill status-ok">Óptimo</span>`;
+                if (item.stock <= item.minimo * 0.6) {
+                    statusHTML = `<span class="status-pill status-crit">Crítico — Reordenar</span>`;
+                } else if (item.stock <= item.minimo) {
+                    statusHTML = `<span class="status-pill status-low">Stock Bajo</span>`;
+                }
+
+                return `
+                    <tr>
+                        <td><strong>${item.sku}</strong></td>
+                        <td>${item.nombre}</td>
+                        <td>${item.unidad}</td>
+                        <td>$${item.costoUnit.toFixed(2)}</td>
+                        <td><strong>${item.stock} ${item.unidad}</strong></td>
+                        <td>${item.minimo} ${item.unidad}</td>
+                        <td>${statusHTML}</td>
+                        <td><button class="btn-restock" onclick="reabastecerSKU('${item.sku}')">+ Reabastecer (+${item.recarga})</button></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function renderTablaRecetas() {
+            const tbody = document.getElementById('tbody-recetas');
+            tbody.innerHTML = catalogoServicios.map(srv => {
+                const recetaTxt = Object.entries(srv.receta)
+                    .map(([sku, qty]) => {
+                        const inv = appState.inventario.find(i => i.sku === sku);
+                        return `${sku} (-${qty} ${inv ? inv.unidad : ''})`;
+                    })
+                    .join(', ');
+                return `
+                    <tr>
+                        <td><span class="status-pill ${srv.categoria === 'Manos' ? 'status-crit' : 'status-ok'}">${srv.categoria}</span></td>
+                        <td><strong>${srv.nombre}</strong></td>
+                        <td>$${srv.precio}.00</td>
+                        <td><small>${recetaTxt}</small></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function renderComisionesEspecialistas() {
+            const cont = document.getElementById('grid-comisiones-especialistas');
+            const totalVentas = appState.ventas.reduce((s, v) => s + v.total, 0) || 1;
+
+            const especialistas = ['EVA', 'SHANTAL'];
+            cont.innerHTML = especialistas.map(esp => {
+                const ventasEsp = appState.ventas.filter(v => v.especialista === esp);
+                const bruto = ventasEsp.reduce((s, v) => s + v.total, 0);
+                const comision = ventasEsp.reduce((s, v) => s + v.comision, 0);
+                const share = Math.round((bruto / totalVentas) * 100);
+
+                return `
+                    <div class="esp-card ${esp === 'SHANTAL' ? 'shantal' : ''}">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <h3 style="margin:0; font-family:'Playfair Display',serif; color:var(--navy);">Especialista: ${esp}</h3>
+                            <span class="status-pill ${esp === 'EVA' ? 'status-crit' : 'status-ok'}">Comisión 35%</span>
+                        </div>
+                        <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:14px;">
+                            <div>
+                                <small style="color:#64748b; display:block;">Servicios</small>
+                                <strong style="font-size:1.2rem;">${ventasEsp.length}</strong>
+                            </div>
+                            <div>
+                                <small style="color:#64748b; display:block;">Venta Generada</small>
+                                <strong style="font-size:1.2rem;">$${bruto.toFixed(2)}</strong>
+                            </div>
+                            <div>
+                                <small style="color:#64748b; display:block;">Comisión 35%</small>
+                                <strong style="font-size:1.25rem; color:${esp === 'EVA' ? 'var(--rosaOscuro)' : 'var(--verde)'};">$${comision.toFixed(2)}</strong>
+                            </div>
+                        </div>
+                        <div class="progress-bar-bg">
+                            <div class="progress-bar-fill" style="width:${share}%;"></div>
+                        </div>
+                        <div style="font-size:0.78rem; color:#64748b; margin-top:6px;">Participación en ingresos del día: ${share}%</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderTablaVentas() {
+            const filtro = document.getElementById('filtro-ventas-esp').value;
+            const lista = filtro === 'TODOS'
+                ? appState.ventas
+                : appState.ventas.filter(v => v.especialista === filtro);
+
+            const tbody = document.getElementById('tbody-ventas');
+            tbody.innerHTML = lista.map(v => `
+                <tr>
+                    <td><strong>${v.folio}</strong></td>
+                    <td>${v.hora}</td>
+                    <td>${v.cliente}<br><small style="color:#64748b;">${v.telefono}</small></td>
+                    <td><span class="tag-esp" style="background:${v.especialista === 'EVA' ? 'var(--rosaOscuro)' : 'var(--verde)'};">${v.especialista}</span></td>
+                    <td>${v.servicios.join(', ')}</td>
+                    <td>${v.metodoPago}</td>
+                    <td><strong>$${v.total.toFixed(2)}</strong></td>
+                    <td><strong style="color:var(--rosaOscuro);">$${v.comision.toFixed(2)}</strong></td>
+                </tr>
+            `).join('');
+        }
+
+        function actualizarKPIs() {
+            const totalIngresos = appState.ventas.reduce((s, v) => s + v.total, 0);
+            const totalComisiones = appState.ventas.reduce((s, v) => s + v.comision, 0);
+            const totalInsumos = appState.ventas.reduce((s, v) => s + v.costoInsumos, 0);
+            const utilidadBruta = totalIngresos - totalComisiones - totalInsumos;
+
+            const comEva = appState.ventas.filter(v => v.especialista === 'EVA').reduce((s, v) => s + v.comision, 0);
+            const comSha = appState.ventas.filter(v => v.especialista === 'SHANTAL').reduce((s, v) => s + v.comision, 0);
+            const alertas = appState.inventario.filter(i => i.stock <= i.minimo).length;
+
+            document.getElementById('kpi-ingresos').innerText = `$${totalIngresos.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            document.getElementById('kpi-ingresos-sub').innerText = `${appState.ventas.length} cobros registrados hoy`;
+
+            document.getElementById('kpi-comisiones').innerText = `$${totalComisiones.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            document.getElementById('kpi-comisiones-sub').innerText = `EVA: $${comEva.toFixed(2)} • SHANTAL: $${comSha.toFixed(2)}`;
+
+            document.getElementById('kpi-utilidad-bruta').innerText = `$${utilidadBruta.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+            document.getElementById('kpi-insumos-sub').innerText = `Costo insumos SKU: $${totalInsumos.toFixed(2)}`;
+
+            document.getElementById('kpi-alertas-stock').innerText = alertas;
+        }
+
+        function exportarCorteCSV() {
+            const headers = ['Folio', 'Hora', 'Clienta', 'Telefono_ID', 'Especialista', 'Servicios', 'Metodo_Pago', 'Ingreso_Bruto_MXN', 'IVA_Trasladado_MXN', 'Comision_35_MXN', 'Costo_Insumos_MXN'];
+            const rows = appState.ventas.map(v => {
+                const iva = (v.total - (v.total / 1.16)).toFixed(2);
+                return [
+                    v.folio,
+                    v.hora,
+                    `"${v.cliente}"`,
+                    v.telefono,
+                    v.especialista,
+                    `"${v.servicios.join(' + ')}"`,
+                    `"${v.metodoPago}"`,
+                    v.total.toFixed(2),
+                    iva,
+                    v.comision.toFixed(2),
+                    v.costoInsumos.toFixed(2)
+                ].join(',');
+            });
+
+            const csvContent = '\uFEFF' + [headers.join(','), ...rows].join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Cornelia_Corte_Caja_Comisiones_${new Date().toISOString().slice(0,10)}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function refrescarTodoAdmin() {
+            actualizarKPIs();
+            renderCitasPendientes();
+            renderTablaInventario();
+            renderTablaRecetas();
+            renderComisionesEspecialistas();
+            renderTablaVentas();
+        }
+
+        // Inicialización al cargar la página
+        renderHorarios();
+        actualizarBadgeCitas();
+        poblarSelectServiciosPOS();
+        actualizarPreviewPOS();
+    </script>
+</body>
+</html>
